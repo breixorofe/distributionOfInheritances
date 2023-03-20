@@ -1,0 +1,55 @@
+services:
+  application:
+    container_name: inheritanceDistributionApp
+    build:
+      context: ./docker/app
+      dockerfile: App.Dockerfile
+      #user: ${CURRENT_UID}   
+    volumes:
+      - ./:/var/www/distributionOfInheritances
+      - ./docker/web-server/apache/v-hosts/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+    ###> XDEBUG 3 ###
+    # Use your client IP here
+    # Windows (with WSL2) and Mac: host.docker.internal
+    environment:
+      XDEBUG_CLIENT_HOST: host.docker.internal
+      XDEBUG_CLIENT_PORT: 9003
+      PHP_IDE_CONFIG: serverName=application
+    ports:
+      - "82:80"
+      - "83:81"
+    networks:
+      - inheritanceDistributionApp-db-network
+      - inheritanceDistributionApp-network
+  mysql:
+    container_name: inheritanceDistributionAppDatabase
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'inheritanceDistributionApp'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: '123456'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: '123456root'
+    networks:
+      - inheritanceDistributionApp-db-network
+
+  phpmyadmin:
+    container_name: inheritanceDistributionAppPhpmyadmin
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    networks:
+      - inheritanceDistributionApp-db-network
+
+networks:
+  inheritanceDistributionApp-network:
+  inheritanceDistributionApp-db-network:

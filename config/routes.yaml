@@ -1,0 +1,4 @@
+DistributionOfInheritances:
+  prefix: /api/
+  resource: ../src/DistributionOfInheritances/Infrastructure/Api/routes.yaml
+  trailing_slash_on_root: false

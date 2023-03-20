@@ -1,0 +1,4 @@
+GetHeritageByName:
+  path: /heritage/{name}
+  controller: App\DistributionOfInheritances\Infrastructure\Api\HeritageByNameGetController
+  methods: [ GET ]
